@@ -20,7 +20,8 @@ The project is initially created using .NET 4.5 and Azure Key Vault 1.0.
 
 Use the following registry settings were used to disable TLS 1.0. Reboot the machine after applying changes.
 
-`Windows Registry Editor Version 5.00
+```
+Windows Registry Editor Version 5.00
 
 [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL]
 "EventLogging"=dword:00000001
@@ -82,4 +83,4 @@ Use the following registry settings were used to disable TLS 1.0. Reboot the mac
 
 [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.2\Server]
 "DisabledByDefault"=dword:00000000
-`
+```
