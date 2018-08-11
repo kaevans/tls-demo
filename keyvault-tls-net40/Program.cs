@@ -4,14 +4,12 @@ using Microsoft.Rest;
 using Microsoft.Rest.Serialization;
 using Sample.Microsoft.HelloKeyVault;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace keyvault_tls_net40
+namespace dotnet_tls
 {
     class Program
     {

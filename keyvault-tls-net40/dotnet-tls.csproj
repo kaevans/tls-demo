@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{4B870DD5-0D24-40A8-9C16-FFA9C4ED0112}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>keyvault_tls_net40</RootNamespace>
-    <AssemblyName>keyvault-tls-net40</AssemblyName>
+    <RootNamespace>dotnet_tls</RootNamespace>
+    <AssemblyName>dotnet-tls</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />

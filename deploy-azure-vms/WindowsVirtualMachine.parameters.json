@@ -1,0 +1,44 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters":
+  {
+    "adminUsername":
+    {
+      "value": "myadmin"
+    },
+    "adminPassword":
+    {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/678fbfe2-79a7-4689-839d-0a187e5b6b1a/resourceGroups/Cloud-AD/providers/Microsoft.KeyVault/vaults/kirkevault"
+        },
+        "secretName": "vmPassword"
+      }
+    },
+    "addressPrefix":
+    {
+      "value": "10.3.0.0/16"
+    },
+    "subnetName":
+    {
+      "value": "default"
+    },
+    "subnetPrefix":
+    {
+      "value": "10.3.0.0/24"
+    },
+    "vmNamePrefix":
+    {
+      "value": "ade1"
+    },
+    "vmCount":
+    {
+      "value": 5
+    },
+    "vnetName":
+    {
+      "value": "ade"
+    }
+  }
+}
