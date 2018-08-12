@@ -7,6 +7,7 @@ using System;
 using System.Configuration;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
@@ -42,12 +43,32 @@ namespace dotnet_tls
                 keyBundle = CreateKey(keyBundle, out keyName);
                 WrapUnwrap(keyBundle);
             }
-            catch (KeyVaultClientException oops)
+            catch (KeyVaultClientException keyVaultoops)
             {
-                Console.WriteLine(oops.Message);
+                //Something's up with KeyVault, check permissions,
+                //TODO: use transient fault handling to retry
+                WriteException(keyVaultoops, 0);
+            }
+            catch (HttpRequestException networkoops)
+            {
+                //Check network availability, TLS settings
+                WriteException(networkoops, 0);
             }
         }
 
+        static void WriteException(Exception oops, int indent)
+        {
+            string pad = new string(' ', indent);
+            
+            Console.WriteLine(string.Format("{0}-{1}: {2}", pad, oops.GetType().FullName, oops.Message));            
+
+            if (null != oops.InnerException)
+            {
+                WriteException(oops.InnerException, ++indent);
+            }
+
+            Console.WriteLine(oops.StackTrace);
+        }
         /// <summary>
         /// Created the specified key
         /// </summary>
