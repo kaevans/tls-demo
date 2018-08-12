@@ -6,6 +6,7 @@ using Sample.Microsoft.HelloKeyVault;
 using System;
 using System.Configuration;
 using System.Linq;
+using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
@@ -18,6 +19,8 @@ namespace dotnet_tls
         static void Main(string[] args)
         {
             inputValidator = new InputValidator(args);
+
+            ConfigureServicePointManager();
 
             ServiceClientTracing.AddTracingInterceptor(new ConsoleTracingInterceptor());
             ServiceClientTracing.IsEnabled = true;
@@ -34,8 +37,15 @@ namespace dotnet_tls
             KeyBundle keyBundle = null;
             string keyName = default(string);
 
-            keyBundle = CreateKey(keyBundle, out keyName);
-            WrapUnwrap(keyBundle);
+            try
+            {
+                keyBundle = CreateKey(keyBundle, out keyName);
+                WrapUnwrap(keyBundle);
+            }
+            catch (KeyVaultClientException oops)
+            {
+                Console.WriteLine(oops.Message);
+            }
         }
 
         /// <summary>
@@ -168,6 +178,22 @@ namespace dotnet_tls
             }
             throw new System.Exception(
                     string.Format("Could not find the certificate with thumbprint {0} in any certificate store.", certificateThumbprint));
+        }
+
+        static void ConfigureServicePointManager()
+        {
+            var value = ConfigurationManager.AppSettings["ServicePointManagerConfigEnabled"];
+            bool enable = false;
+            bool.TryParse(value, out enable);
+
+            if (enable)
+            {
+                // add TLS 1.2
+                System.Net.ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
+                // remove insecure TLS options
+                System.Net.ServicePointManager.SecurityProtocol &= ~SecurityProtocolType.Ssl3;
+                System.Net.ServicePointManager.SecurityProtocol &= ~SecurityProtocolType.Tls;
+            }
         }
     }
 }
