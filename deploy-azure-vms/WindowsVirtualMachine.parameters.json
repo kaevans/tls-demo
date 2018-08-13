@@ -30,11 +30,11 @@
     },
     "vmNamePrefix":
     {
-      "value": "ade1"
+      "value": "vm"
     },
     "vmCount":
     {
-      "value": 5
+      "value": 3
     },
     "vnetName":
     {
