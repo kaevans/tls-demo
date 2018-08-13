@@ -228,6 +228,26 @@
               "destinationAddressPrefix": "*",
               "destinationPortRange": "3389"
             }
+          },
+          {
+            "name": "default-allow-winrm",
+            "properties":
+            {
+              "priority": 1010,
+              "protocol": "TCP",
+              "access": "Allow",
+              "direction": "Inbound",
+              "sourceApplicationSecurityGroups":
+              [
+              ],
+              "destinationApplicationSecurityGroups":
+              [
+              ],
+              "sourceAddressPrefix": "*",
+              "sourcePortRange": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "5985"
+            }
           }
         ]
       }
