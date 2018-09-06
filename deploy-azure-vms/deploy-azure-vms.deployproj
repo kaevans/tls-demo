@@ -27,8 +27,11 @@
       <Visible>False</Visible>
     </None>
     <Content Include="Deploy-AzureResourceGroup.ps1" />
-    <Content Include="WindowsVirtualMachine.json" />
-    <Content Include="WindowsVirtualMachine.parameters.json" />
+    <Content Include="azuredeploy.json" />
+    <Content Include="azuredeploy.parameters.json" />
+    <Content Include="DSC\vm1dsc.ps1" />
+    <Content Include="DSC\vm2dsc.ps1" />
+    <Content Include="DSC\vm3dsc.ps1" />
   </ItemGroup>
   <Target Name="GetReferenceAssemblyPaths" />
 </Project>

@@ -4,12 +4,15 @@ using Microsoft.Rest;
 using Microsoft.Rest.Serialization;
 using Sample.Microsoft.HelloKeyVault;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 namespace dotnet_tls
 {
@@ -26,14 +29,9 @@ namespace dotnet_tls
             ServiceClientTracing.AddTracingInterceptor(new ConsoleTracingInterceptor());
             ServiceClientTracing.IsEnabled = true;
 
-            var clientId = ConfigurationManager.AppSettings["AuthClientId"];
-            var cerificateThumbprint = ConfigurationManager.AppSettings["AuthCertThumbprint"];
-
-            var certificate = FindCertificateByThumbprint(cerificateThumbprint);
-            var assertionCert = new ClientAssertionCertificate(clientId, certificate);
 
             keyVaultClient = new KeyVaultClient(new KeyVaultClient.AuthenticationCallback(
-                   (authority, resource, scope) => GetAccessToken(authority, resource, scope, assertionCert)));
+                   (authority, resource, scope) => GetAccessToken(authority, resource, scope)));
 
             KeyBundle keyBundle = null;
             string keyName = default(string);
@@ -149,6 +147,8 @@ namespace dotnet_tls
                 keyBundle.Attributes.Enabled, expiryDateStr, notBeforeStr);
         }
 
+
+
         /// <summary>
         /// Gets the access token
         /// </summary>
@@ -156,50 +156,30 @@ namespace dotnet_tls
         /// <param name="resource"> Resource </param>
         /// <param name="scope"> scope </param>
         /// <returns> token </returns>
-        public static async Task<string> GetAccessToken(string authority, string resource, string scope, ClientAssertionCertificate assertionCert)
+        public static async Task<string> GetAccessToken(string authority, string resource, string scope)
         {
-            var context = new AuthenticationContext(authority, TokenCache.DefaultShared);
-            var result = await context.AcquireTokenAsync(resource, assertionCert).ConfigureAwait(false);
+            // Build request to acquire managed identities for Azure resources token
+            Console.WriteLine("resource: " + resource);
+            Console.WriteLine("scope: " + scope);
+            var request = (HttpWebRequest)WebRequest.Create("http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=" + resource);
+            request.Headers["Metadata"] = "true";
+            request.Method = "GET";
 
-            return result.AccessToken;
+            
+            // Call /token endpoint
+            var response = (HttpWebResponse)await request.GetResponseAsync();
+
+            // Pipe response Stream to a StreamReader, and extract access token
+            var streamResponse = new StreamReader(response.GetResponseStream());
+            var stringResponse = streamResponse.ReadToEnd();
+            var j = new JavaScriptSerializer();
+            Dictionary<string, string> list = (Dictionary<string, string>)j.Deserialize(stringResponse, typeof(Dictionary<string, string>));
+            string accessToken = list["access_token"];
+
+            return accessToken;
+
         }
 
-        /// <summary>
-        /// Helper function to load an X509 certificate
-        /// </summary>
-        /// <param name="certificateThumbprint">Thumbprint of the certificate to be loaded</param>
-        /// <returns>X509 Certificate</returns>
-        public static X509Certificate2 FindCertificateByThumbprint(string certificateThumbprint)
-        {
-            if (certificateThumbprint == null)
-                throw new System.ArgumentNullException("certificateThumbprint");
-
-            foreach (StoreLocation storeLocation in (StoreLocation[])
-                Enum.GetValues(typeof(StoreLocation)))
-            {
-                foreach (StoreName storeName in (StoreName[])
-                    Enum.GetValues(typeof(StoreName)))
-                {
-                    X509Store store = new X509Store(storeName, storeLocation);
-
-                    store.Open(OpenFlags.ReadOnly);
-                    X509Certificate2Collection col = store.Certificates.Find(X509FindType.FindByThumbprint, certificateThumbprint, false); // Don't validate certs, since the test root isn't installed.
-                    if (col != null && col.Count != 0)
-                    {
-                        foreach (X509Certificate2 cert in col)
-                        {
-                            if (cert.HasPrivateKey)
-                            {
-                                store.Close();
-                                return cert;
-                            }
-                        }
-                    }
-                }
-            }
-            throw new System.Exception(
-                    string.Format("Could not find the certificate with thumbprint {0} in any certificate store.", certificateThumbprint));
-        }
 
         static void ConfigureServicePointManager()
         {

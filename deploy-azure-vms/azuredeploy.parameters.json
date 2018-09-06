@@ -9,8 +9,10 @@
     },
     "adminPassword":
     {
-      "reference": {
-        "keyVault": {
+      "reference":
+      {
+        "keyVault":
+        {
           "id": "/subscriptions/678fbfe2-79a7-4689-839d-0a187e5b6b1a/resourceGroups/Cloud-AD/providers/Microsoft.KeyVault/vaults/kirkevault"
         },
         "secretName": "vmPassword"
@@ -30,15 +32,11 @@
     },
     "vmNamePrefix":
     {
-      "value": "vm"
-    },
-    "vmCount":
-    {
-      "value": 3
+      "value": "dep"
     },
     "vnetName":
     {
-      "value": "ade"
+      "value": "dep-vnet"
     }
   }
 }
