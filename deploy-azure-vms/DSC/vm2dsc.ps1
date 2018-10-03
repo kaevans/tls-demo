@@ -48,21 +48,39 @@ Node $nodeName
 		ValueType = "Dword" 
 		Force = $true
 	}
-	Registry EnableTLS11Client 
+	Registry DisableTLS11Client 
 	{
 		Ensure = "Present"
 		Key = "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.1\Client"
-		ValueName = "DisabledByDefault"
+		ValueName = "Enabled"
 		ValueData = "0"
 		ValueType = "Dword" 
 		Force = $true
 	}	
-	Registry EnableTLS11ServerDefault 
+	Registry DisableTLS11ClientDefault 
+	{
+		Ensure = "Present"
+		Key = "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.1\Client"
+		ValueName = "DisabledByDefault"
+		ValueData = "1"
+		ValueType = "Dword" 
+		Force = $true
+	}
+	Registry DisableTLS11Server 
+	{
+		Ensure = "Present"
+		Key = "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.1\Server"
+		ValueName = "Enabled"
+		ValueData = "0"
+		ValueType = "Dword" 
+		Force = $true
+	}	  
+	Registry DisableTLS11ServerDefault 
 	{
 		Ensure = "Present"
 		Key = "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.1\Server"
 		ValueName = "DisabledByDefault"
-		ValueData = "0"
+		ValueData = "1"
 		ValueType = "Dword" 
 		Force = $true
 	}
