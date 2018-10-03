@@ -36,7 +36,7 @@ This matrix shows the behavior of enabling the `SystemDefaultTlsVersions` and `S
 
 ## Disable TLS 1.0
 
-Use the following registry settings were used to disable TLS 1.0. Reboot the machine after applying changes.
+Use the following registry settings were used to disable TLS 1.0 and TLS 1.2. Reboot the machine after applying changes.
 
 ```
 Windows Registry Editor Version 5.00
@@ -89,10 +89,12 @@ Windows Registry Editor Version 5.00
 [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.1]
 
 [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.1\Client]
-"DisabledByDefault"=dword:00000000
+"Enabled"=dword:00000000
+"DisabledByDefault"=dword:00000001
 
 [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.1\Server]
-"DisabledByDefault"=dword:00000000
+"Enabled"=dword:00000000
+"DisabledByDefault"=dword:00000001
 
 [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.2]
 
